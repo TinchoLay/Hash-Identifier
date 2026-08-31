@@ -1,0 +1,22 @@
+[project]
+name = "hashid"
+version = "0.1.0"
+description = "Herramienta propia de identificación de hashes — inspirada en el proyecto foundations de Cybersecurity-Projects, con detección por Strategy pattern, modo batch, modo interactivo y salida JSON/CSV."
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.1",
+    "rich>=13.0",
+]
+
+[project.scripts]
+hashid = "hashid.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
