@@ -1,0 +1,6 @@
+# archivo de prueba para el modo batch
+$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQNQy.uK4Of2T7G
+a9993e364706816aba3e25717850c26c9cd0d89d
+5d41402abc4b2a76b9719d911017c592
+0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+esto no es un hash reconocible

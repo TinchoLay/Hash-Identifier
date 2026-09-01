@@ -1,0 +1,8 @@
+input,algorithm,confidence,reason,detector_name
+$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQNQy.uK4Of2T7G,bcrypt,high,"prefijo `$2b$` — PHC string bcrypt, variante 2b (actual)",PrefixDetector
+a9993e364706816aba3e25717850c26c9cd0d89d,SHA-1,high,40 caracteres hexadecimales — 40 caracteres hex — prácticamente exclusivo de SHA-1; también usado como checksum de archivo y como hash de commit de Git,HexLengthDetector
+5d41402abc4b2a76b9719d911017c592,MD5,medium,32 caracteres hexadecimales — 32 caracteres hex — comparte largo con NTLM y MD4; muy usado también como checksum de archivo,HexLengthDetector
+5d41402abc4b2a76b9719d911017c592,NTLM,medium,32 caracteres hexadecimales — 32 caracteres hex — comparte largo con MD5 y MD4,HexLengthDetector
+5d41402abc4b2a76b9719d911017c592,MD4,low,"32 caracteres hexadecimales — 32 caracteres hex — mismo largo que MD5/NTLM, poco frecuente hoy",HexLengthDetector
+0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,Ethereum Address,high,prefijo '0x' + 40 caracteres hex — dirección de cuenta de 20 bytes,BlockchainDetector
+esto no es un hash reconocible,,,sin coincidencias,
