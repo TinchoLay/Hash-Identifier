@@ -24,7 +24,7 @@ PREFIX_RULES: list[tuple[str, str, str]] = [
     ("$2y$", "bcrypt", "PHC string bcrypt, variante 2y (compatibilidad PHP)"),
     ("$6$", "SHA-512 crypt", "Unix crypt(3) con SHA-512, usado en /etc/shadow"),
     ("$5$", "SHA-256 crypt", "Unix crypt(3) con SHA-256, usado en /etc/shadow"),
-    ("$1$", "MD5 crypt", "Unix crypt(3) con MD5, legacy"),
+    ("$1$", "MD5 crypt", "Unix crypt(3) con MD5, legacy — formato idéntico al usado por Cisco IOS 'type 5'"),
     ("$apr1$", "APR1 (Apache MD5)", "variante de MD5 crypt usada por Apache htpasswd"),
     ("pbkdf2_sha256$", "PBKDF2-SHA256 (Django)", "formato de hash de contraseñas de Django"),
     ("pbkdf2:sha256:", "PBKDF2-SHA256 (Werkzeug/Flask)", "formato usado por Werkzeug/Flask"),

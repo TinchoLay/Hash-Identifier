@@ -9,6 +9,13 @@ distintos producen salidas del mismo tamaño. Por eso, a diferencia
 de PrefixDetector, acá SIEMPRE se devuelven TODOS los algoritmos
 posibles para ese largo, con confianza media o baja según qué tan
 "disputada" esté esa longitud.
+
+Nota de diseño (Sesión 4): varios de estos largos también son
+comunes como checksums de integridad de archivos (no solo hashes de
+contraseñas) y como hashes de blockchain sin el prefijo "0x" de
+Ethereum. No hay forma de distinguir estos casos de uso solo por el
+string — por eso se documentan en la nota de cada regla en vez de
+crear un detector separado que no podría diferenciarlos igual.
 """
 
 import re
@@ -20,19 +27,17 @@ from hashid.models import Confidence, HashCandidate
 _HEX_PATTERN = re.compile(r"^[0-9a-fA-F]+$")
 
 # Cada fila: (longitud en caracteres, algoritmo, confianza, nota)
-# Longitudes muy "disputadas" (varios algoritmos comparten el mismo largo,
-# como 32) llevan confianza "medium". Longitudes casi exclusivas de un
-# solo algoritmo llevan "high" — aunque no tengan prefijo, son bastante
-# confiables igual.
 HEX_LENGTH_RULES: list[tuple[int, str, Confidence, str]] = [
-    (8, "CRC32", "medium", "8 caracteres hex — típico de un checksum CRC32"),
+    (8, "CRC32", "medium", "8 caracteres hex — checksum de archivo más común de este largo"),
     (16, "MySQL323 (legacy)", "low", "16 caracteres hex — formato antiguo de MySQL, poco usado hoy"),
-    (32, "MD5", "medium", "32 caracteres hex — comparte largo con NTLM y MD4"),
+    (32, "MD5", "medium", "32 caracteres hex — comparte largo con NTLM y MD4; muy usado también como checksum de archivo"),
     (32, "NTLM", "medium", "32 caracteres hex — comparte largo con MD5 y MD4"),
     (32, "MD4", "low", "32 caracteres hex — mismo largo que MD5/NTLM, poco frecuente hoy"),
-    (40, "SHA-1", "high", "40 caracteres hex — prácticamente exclusivo de SHA-1"),
+    (40, "SHA-1", "high", "40 caracteres hex — prácticamente exclusivo de SHA-1; también usado como checksum de archivo y como hash de commit de Git"),
     (56, "SHA-224", "high", "56 caracteres hex — prácticamente exclusivo de SHA-224"),
-    (64, "SHA-256", "high", "64 caracteres hex — también usado por SHA3-256"),
+    (64, "SHA-256", "high", "64 caracteres hex — también usado por SHA3-256 y como checksum de archivo"),
+    (64, "Bitcoin Transaction Hash (doble SHA-256)", "low", "64 caracteres hex sin prefijo — mismo largo que SHA-256, indistinguible sin más contexto"),
+    (64, "Ethereum Hash (Keccak-256, sin prefijo '0x')", "low", "64 caracteres hex sin el prefijo '0x' habitual de Ethereum"),
     (96, "SHA-384", "high", "96 caracteres hex — prácticamente exclusivo de SHA-384"),
     (128, "SHA-512", "high", "128 caracteres hex — también usado por SHA3-512 y Whirlpool"),
 ]
@@ -42,8 +47,6 @@ class HexLengthDetector(Detector):
     """Reconoce hashes crudos en hex a partir de su longitud."""
 
     name = "HexLengthDetector"
-    # Prioridad alta (número grande = se prueba tarde): es la señal más
-    # débil que tenemos, así que solo se usa si nadie más respondió antes.
     priority = 50
 
     def match(self, text: str) -> list[HashCandidate]:
