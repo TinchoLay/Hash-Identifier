@@ -1,43 +1,60 @@
 """Motor de orquestación: corre todos los detectores registrados sobre
 un texto de entrada y devuelve los candidatos encontrados.
 
-Esto es la "función pura" del proyecto — el equivalente a identify()
-en el original, pero acá no tiene ningún if/elif de formato: solo
-sabe recorrer una lista de Detector y juntar resultados. Es intencional
-que este archivo se quede chico para siempre, incluso cuando agreguemos
-20 detectores más.
+A diferencia de la primera versión (que cortaba en el primer detector
+que respondía), esta versión corre TODOS los detectores siempre y junta
+la unión de resultados. Esto es más correcto para un caso real: un
+analista de SOC prefiere ver "podría ser MD5, NTLM o MD4" en vez de que
+la herramienta le oculte candidatos igual de válidos.
 """
 
 from hashid.detectors.base import Detector
+from hashid.detectors.hex_length import HexLengthDetector
 from hashid.detectors.prefix import PrefixDetector
-from hashid.models import HashCandidate
+from hashid.detectors.shapes import DESCryptDetector, MySQL5Detector, NetNTLMDetector
+from hashid.models import Confidence, HashCandidate
 
-# Lista de detectores activos, en el orden en que se van a registrar.
-# El motor los reordena por prioridad antes de correrlos, así que el
-# orden acá no importa para el resultado — pero mantenerlo prolijo
-# (agrupado por categoría) ayuda a la lectura.
+# Orden de "fuerza" de cada nivel de confianza, usado para ordenar el
+# resultado final (más confiable primero) y para decidir con cuál
+# quedarnos si dos detectores devuelven el mismo algoritmo.
+_CONFIDENCE_RANK: dict[Confidence, int] = {"high": 0, "medium": 1, "low": 2}
+
+# Lista de detectores activos. El orden acá no afecta el resultado
+# (se corren todos igual) — pero mantenerlos agrupados por "fuerza de
+# señal" ayuda a la lectura del archivo.
 _DETECTORS: list[Detector] = [
     PrefixDetector(),
+    NetNTLMDetector(),
+    MySQL5Detector(),
+    DESCryptDetector(),
+    HexLengthDetector(),
 ]
 
 
 def identify(text: str) -> list[HashCandidate]:
     """Analiza `text` con todos los detectores registrados.
 
-    Devuelve la lista de candidatos del PRIMER detector (por prioridad)
-    que encuentre algo. Si un detector de alta prioridad ya dio una
-    respuesta con confianza "high", no tiene sentido seguir preguntando
-    a detectores más débiles — por eso cortamos apenas hay un match.
+    Devuelve la unión de todos los candidatos encontrados, sin
+    duplicados por algoritmo, ordenados de mayor a menor confianza.
     """
     text = text.strip()
     if not text:
         return []
 
-    detectors_by_priority = sorted(_DETECTORS, key=lambda d: d.priority)
+    all_candidates: list[HashCandidate] = []
+    for detector in _DETECTORS:
+        all_candidates.extend(detector.match(text))
 
-    for detector in detectors_by_priority:
-        candidates = detector.match(text)
-        if candidates:
-            return candidates
+    # Deduplicar por algoritmo: si dos detectores coincidieran en el
+    # mismo algoritmo, nos quedamos con el de mayor confianza.
+    best_by_algorithm: dict[str, HashCandidate] = {}
+    for candidate in all_candidates:
+        existing = best_by_algorithm.get(candidate.algorithm)
+        if existing is None or (
+            _CONFIDENCE_RANK[candidate.confidence] < _CONFIDENCE_RANK[existing.confidence]
+        ):
+            best_by_algorithm[candidate.algorithm] = candidate
 
-    return []
+    result = list(best_by_algorithm.values())
+    result.sort(key=lambda c: _CONFIDENCE_RANK[c.confidence])
+    return result
