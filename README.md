@@ -72,8 +72,8 @@ That's deliberate, not a limitation I'm hiding. MD5 and NTLM produce identical-l
 You'll need Python 3.11 or newer, and [uv](https://docs.astral.sh/uv/) (a fast Python package manager — think pip, but quicker and it also handles virtual environments for you).
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/hash-identifier.git
-cd hash-identifier
+git clone https://github.com/TinchoLay/Hash-Identifier.git
+cd Hash-Identifier
 uv sync
 ```
 
@@ -103,7 +103,7 @@ The short version: instead of one giant function with a long chain of if/elif ch
 
 The upside: adding a new format later means writing one new class, not editing a 300-line function and hoping I don't break the five formats already living inside it. Whether that trade-off was worth it for a project this size is a fair question — but it's the kind of decision I wanted to make on purpose and be able to explain, not something I backed into.
 
-Full write-up of every session, including two or three bugs I hit and how I tracked them down, lives in `docs/Hash_Identifier_Documentacion.docx`.
+Full write-up of every session, including two or three bugs I hit and how I tracked them down, lives in `Hash-Identifier-Documentacion.docx`.
 
 ### Running the tests
 
@@ -185,8 +185,8 @@ Eso es a propósito, no es una limitación que esté escondiendo. MD5 y NTLM pro
 Necesitás Python 3.11 o más nuevo, y [uv](https://docs.astral.sh/uv/) (un gestor de paquetes de Python rápido — como pip, pero más veloz y que además maneja los entornos virtuales por vos).
 
 ```bash
-git clone https://github.com/TU_USUARIO/hash-identifier.git
-cd hash-identifier
+git clone https://github.com/TinchoLay/Hash-Identifier.git
+cd Hash-Identifier
 uv sync
 ```
 
@@ -216,7 +216,7 @@ La versión corta: en vez de una función gigante con una cascada de if/elif par
 
 La ventaja: agregar un formato nuevo más adelante significa escribir una clase nueva, no editar una función de 300 líneas con la esperanza de no romper los cinco formatos que ya viven ahí adentro. Si ese trade-off valía la pena para un proyecto de este tamaño es una pregunta válida — pero es el tipo de decisión que quise tomar a propósito y poder explicar, no algo en lo que caí sin pensarlo.
 
-La bitácora completa de cada sesión, incluidos dos o tres bugs que encontré y cómo los rastreé, vive en `docs/Hash_Identifier_Documentacion.docx`.
+La bitácora completa de cada sesión, incluidos dos o tres bugs que encontré y cómo los rastreé, vive en `Hash-Identifier-Documentacion.docx`.
 
 ### Correr los tests
 
