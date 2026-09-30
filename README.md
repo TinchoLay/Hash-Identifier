@@ -67,6 +67,10 @@ $ hashid identify "5d41402abc4b2a76b9719d911017c592" --format json
 
 That's deliberate, not a limitation I'm hiding. MD5 and NTLM produce identical-length output — there's no way to tell them apart from the string alone, so the tool says exactly that instead of guessing and pretending it's sure.
 
+An early single-file version of the tool identifying a PBKDF2 hash, with confidence and reason:
+
+![Early version identifying a PBKDF2 hash](assets/01-identify-output.png)
+
 ### Installing it
 
 You'll need Python 3.11 or newer, and [uv](https://docs.astral.sh/uv/) (a fast Python package manager — think pip, but quicker and it also handles virtual environments for you).
@@ -179,6 +183,10 @@ $ hashid identify "5d41402abc4b2a76b9719d911017c592" --format json
 ```
 
 Eso es a propósito, no es una limitación que esté escondiendo. MD5 y NTLM producen salidas del mismo largo — no hay forma de distinguirlos solo mirando el string, así que la herramienta dice exactamente eso en vez de adivinar y hacerse la segura.
+
+Una versión temprana de un solo archivo de la herramienta identificando un hash PBKDF2, con confianza y motivo:
+
+![Versión temprana identificando un hash PBKDF2](assets/01-identify-output.png)
 
 ### Instalación
 
